@@ -14,6 +14,9 @@ return (new PhpCsFixer\Config())
     ->setRules(array(
         '@Symfony' => true,
         '@Symfony:risky' => true,
+        'declare_strict_types' => true,
+        'no_useless_else' => true,
+        'no_useless_return' => true,
     ))
     ->setRiskyAllowed(true)
     ->setFinder($finder)
