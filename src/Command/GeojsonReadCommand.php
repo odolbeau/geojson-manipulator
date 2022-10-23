@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use GeoJson\Feature\FeatureCollection;
+use App\Helper\GeoJsonFileManipulator;
 use GeoJson\Feature\Feature;
-use GeoJson\GeoJson;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -20,6 +19,12 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class GeojsonReadCommand extends Command
 {
+    public function __construct(
+        private GeoJsonFileManipulator $geoJsonFileManipulator,
+    ) {
+        parent::__construct();
+    }
+
     protected function configure(): void
     {
         $this
@@ -33,23 +38,7 @@ class GeojsonReadCommand extends Command
         /** @phpstan-ignore-next-line */
         $file = (string) $input->getArgument('file');
 
-        if (!file_exists($file)) {
-            throw new \RuntimeException("File $file does not exists.");
-        }
-
-        if (false === $data = file_get_contents($file)) {
-            throw new \RuntimeException('Unable to retrieve content of given file');
-        }
-        $decodedData = json_decode($data, true);
-        if (!is_array($decodedData)) {
-            throw new \RuntimeException('Given file contains unsupported content.');
-        }
-
-        $featureCollection = Geojson::jsonUnserialize($decodedData);
-
-        if (!$featureCollection instanceof FeatureCollection) {
-            throw new \UnexpectedValueException("Expected a \"GeoJson\Feature\FeatureCollection\", got \"{$featureCollection->getType()}\".");
-        }
+        $featureCollection = $this->geoJsonFileManipulator->read($file);
 
         $rows = [];
         /** @var Feature $feature */
