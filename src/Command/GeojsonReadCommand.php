@@ -48,10 +48,15 @@ class GeojsonReadCommand extends Command
                 throw new \UnexpectedValueException('Given Feature must contains a name property!');
             }
 
-            $rows[] = [$properties['name'], $properties['description'] ?: ''];
+            $rows[] = [
+                $properties['name'],
+                $properties['description'] ?? '',
+                $properties['address'] ?? '',
+                $properties['link'] ?? '',
+            ];
         }
 
-        $io->table(['Name', 'Description'], $rows);
+        $io->table(['Name', 'Description', 'Address', 'Link'], $rows);
 
         return Command::SUCCESS;
     }
