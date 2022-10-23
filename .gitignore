@@ -1,3 +1,5 @@
+/tools/*/composer.lock
+/tools/*/vendor
 
 ###> symfony/framework-bundle ###
 /.env.local
