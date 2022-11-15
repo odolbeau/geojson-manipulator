@@ -22,3 +22,6 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    geocoder.cache.psr16:
+        class: Symfony\Component\Cache\Psr16Cache
+        arguments: ['@geocoder.cache']
