@@ -11,7 +11,9 @@ final class GeoJsonFileManipulator
 {
     public function read(string $file): FeatureCollection
     {
-        $this->ensureFileExists($file);
+        if (!file_exists($file)) {
+            throw new \RuntimeException("File $file does not exists.");
+        }
 
         if (false === $data = file_get_contents($file)) {
             throw new \RuntimeException('Unable to retrieve content of given file');
@@ -32,8 +34,6 @@ final class GeoJsonFileManipulator
 
     public function write(string $file, FeatureCollection $featureCollection): void
     {
-        $this->ensureFileExists($file);
-
         $json = $featureCollection->jsonSerialize();
         if (false === $json = json_encode($json)) {
             throw new \RuntimeException('Unable to json encode the given FeatureCollection.');
@@ -42,14 +42,5 @@ final class GeoJsonFileManipulator
         $json = str_replace('\\\n', '\n', $json);
 
         file_put_contents($file, $json);
-    }
-
-    private function ensureFileExists(string $file): void
-    {
-        if (file_exists($file)) {
-            return;
-        }
-
-        throw new \RuntimeException("File $file does not exists.");
     }
 }
